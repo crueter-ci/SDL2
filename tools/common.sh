@@ -16,6 +16,6 @@ extract() {
   rm -fr $DIRECTORY
   unzip "$ROOTDIR/$ARTIFACT"
 
-  mv $FILENAME-* "$FILENAME-$VERSION"
+  mv SDL-* "$FILENAME-$VERSION"
   mv "$FILENAME-$VERSION" "$FILENAME-$VERSION-$ARCH"
 }
