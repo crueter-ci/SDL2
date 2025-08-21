@@ -102,8 +102,7 @@ jobs:
           usesh: true
           envs: 'PLATFORM ARCH GITHUB_WORKSPACE'
           prepare: |
-            pkgutil -y -i wget libsamplerate_dev libx11 libsunmath
-            pkgutil -U -y tar
+            pkgutil -y -i wget libsamplerate_dev libx11 libsunmath unzip
 
           run: |
             chmod a+x ./unix/build.sh

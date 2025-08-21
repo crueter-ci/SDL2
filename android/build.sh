@@ -75,7 +75,7 @@ pushd "$BUILD_DIR"
 # You can change this for e.g. CMake
 echo "Extracting $PRETTY_NAME $VERSION"
 rm -fr $DIRECTORY
-tar xf "$ROOTDIR/$ARTIFACT"
+unzip "$ROOTDIR/$ARTIFACT"
 
 mv "$FILENAME-$VERSION" "$FILENAME-$VERSION-$ARCH"
 pushd "$FILENAME-$VERSION-$ARCH"
