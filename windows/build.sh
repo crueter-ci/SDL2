@@ -98,11 +98,8 @@ ROOTDIR=$PWD
 mkdir -p "$BUILD_DIR"
 pushd "$BUILD_DIR"
 
-echo "Extracting $PRETTY_NAME $VERSION"
-rm -fr $DIRECTORY
-unzip "$ROOTDIR/$ARTIFACT"
+extract
 
-mv "$FILENAME-$VERSION" "$FILENAME-$VERSION-$ARCH"
 pushd "$FILENAME-$VERSION-$ARCH"
 
 configure

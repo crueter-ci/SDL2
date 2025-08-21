@@ -10,3 +10,12 @@ export REPO="libsdl-org/SDL"
 export DIRECTORY="SDL2-$VERSION"
 export ARTIFACT="SDL2-$VERSION.zip"
 export TAG="release-$VERSION"
+
+extract() {
+  echo "Extracting $PRETTY_NAME $VERSION"
+  rm -fr $DIRECTORY
+  unzip "$ROOTDIR/$ARTIFACT"
+
+  mv $FILENAME-* "$FILENAME-$VERSION"
+  mv "$FILENAME-$VERSION" "$FILENAME-$VERSION-$ARCH"
+}
