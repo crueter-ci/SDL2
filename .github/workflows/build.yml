@@ -69,10 +69,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # - platform: solaris
-          #   runs-on: ubuntu-latest
-          #   arch: amd64
-          #   vm-arch: x86_64
+          - platform: solaris
+            runs-on: ubuntu-latest
+            arch: amd64
+            vm-arch: x86_64
 
           - platform: freebsd
             runs-on: ubuntu-latest
@@ -102,7 +102,7 @@ jobs:
           usesh: true
           envs: 'PLATFORM ARCH GITHUB_WORKSPACE'
           prepare: |
-            pkgutil -y -i wget
+            pkgutil -y -i wget libsamplerate_dev libx11 libsunmath libpulse
             pkgutil -U -y tar
 
           run: |
