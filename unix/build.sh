@@ -50,7 +50,9 @@ copy_build_artifacts() {
     rm -rf "$OUT_DIR/bin"
     rm -rf "$OUT_DIR"/lib/cmake
     rm -rf "$OUT_DIR"/lib/pkgconfig
-    find "$OUT_DIR/lib" -maxdepth 1 -type l -exec rm {} \;
+    rm -rf "$OUT_DIR"/libdata
+    rm -rf "$OUT_DIR"/share
+    find "$OUT_DIR/lib" -type l -exec rm {} \;
     mv "$OUT_DIR/lib"/*.so* "$OUT_DIR/lib/libSDL2.so"
 }
 
