@@ -7,9 +7,12 @@
 [ -z "$BUILD_DIR" ] && BUILD_DIR=build
 [ -z "$PLATFORM" ] && PLATFORM=linux
 
-[ "$ARCH" != "amd64" ] && PLATFORM=$PLATFORM-$ARCH
 [ "$PLATFORM" == "freebsd" ] && EXTRA_CMAKE_FLAGS=(-DSDL_ALSA=OFF -DSDL_PULSEAUDIO=OFF -DSDL_PIPEWIRE=OFF -DSDL_DBUS=OFF -DSDL_LIBUDEV=OFF -DSDL_OSS=ON -DSDL_X11=ON -DSDL_WAYLAND=OFF -DTHREADS_PREFER_PTHREAD_FLAG=ON)
-[ "$PLATFORM" == "solaris" ] && EXTRA_CMAKE_FLAGS=(-DPKG_CONFIG_PATH=/usr/lib/64/pkgconfig)
+[ "$PLATFORM" == "solaris" ] && export PKG_CONFIG_PATH=/usr/lib/64/pkgconfig
+
+[ "$PLATFORM" != "linux" ] && EXTRA_CMAKE_FLAGS=("${EXTRA_CMAKE_FLAGS[@]}" -DSDL_IBUS=OFF)
+
+[ "$ARCH" != "amd64" ] && PLATFORM=$PLATFORM-$ARCH
 
 configure() {
     log_file=$1
