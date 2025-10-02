@@ -1,15 +1,12 @@
-#!/bin/bash
-
-set -e
+#!/bin/bash -e
 
 . tools/common.sh || exit 1
 
-[ -z "$OUT_DIR" ] && OUT_DIR=$PWD/out
-
 [ -z "$ANDROID_NDK_ROOT" ] && echo "You must supply the ANDROID_NDK_ROOT environment variable." && exit 1
-[ -z "$ARCH" ] && ARCH=arm64-v8a
-[ -z "$BUILD_DIR" ] && BUILD_DIR=build
-[ -z "$ANDROID_API" ] && ANDROID_API=23
+OUT_DIR=${OUT_DIR:-"$PWD/out"}
+ARCH=${ARCH:-arm64-v8a}
+BUILD_DIR=${BUILD_DIR:-"$PWD/build"}
+ANDROID_API=${ANDROID_API:-23}
 
 build() {
     echo "Building..."

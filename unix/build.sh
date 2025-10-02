@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+set -e
+
 . tools/common.sh || exit 1
 
 OUT_DIR=${OUT_DIR:-$PWD/out}
@@ -8,8 +10,9 @@ BUILD_DIR=${BUILD_DIR:-build}
 PLATFORM=${PLATFORM:-linux}
 
 [ "$PLATFORM" = "freebsd" ] && EXTRA_CMAKE_FLAGS=(-DSDL_ALSA=OFF -DSDL_PULSEAUDIO=OFF -DSDL_OSS=ON -DSDL_X11=ON -DTHREADS_PREFER_PTHREAD_FLAG=ON)
+[ "$PLATFORM" = "openbsd" ] && EXTRA_CMAKE_FLAGS=(-DCMAKE_C_FLAGS="-L/usr/local/lib")
 [ "$PLATFORM" = "solaris" ] && export PKG_CONFIG_PATH=/usr/lib/64/pkgconfig
-[ "$PLATFORM" != "linux" ] && EXTRA_CMAKE_FLAGS=("${EXTRA_CMAKE_FLAGS[@]}" -DSDL_IBUS=OFF -DSDL_WAYLAND=OFF -DSDL_PIPEWIRE=OFF -DSDL_ALSA=OFF -DSDL_LIBUDEV=OFF -DSDL_DBUS=OFF)
+[ "$PLATFORM" != "linux" ] && EXTRA_CMAKE_FLAGS+=(-DSDL_IBUS=OFF -DSDL_WAYLAND=OFF -DSDL_PIPEWIRE=OFF -DSDL_ALSA=OFF -DSDL_LIBUDEV=OFF -DSDL_DBUS=OFF)
 
 configure() {
     log_file=$1

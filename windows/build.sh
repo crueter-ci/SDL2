@@ -4,9 +4,9 @@ set -e
 
 . tools/common.sh || exit 1
 
-[ -z "$OUT_DIR" ] && OUT_DIR="$PWD/out"
-[ -z "$ARCH" ] && ARCH=amd64
-[ -z "$BUILD_DIR" ] && BUILD_DIR="$PWD/build"
+OUT_DIR=${OUT_DIR:-"$PWD/out"}
+ARCH=${ARCH:-amd64}
+BUILD_DIR=${BUILD_DIR:-"$PWD/build"}
 
 configure() {
     # Configure here (e.g. cmake or the like)
