@@ -12,18 +12,6 @@ configure() {
     # Configure here (e.g. cmake or the like)
     echo "Configuring $PRETTY_NAME..."
 
-    # case "$ARCH" in
-    #     (x86)
-    #         TARGET="Win32"
-    #         ;;
-    #     (amd64|x64|x86_64)
-    #         TARGET="x64"
-    #         ;;
-    #     (aarch64|arm|arm64)
-    #         TARGET="ARM64"
-    #         ;;
-    # esac
-
     cmake -S . -B "$BUILD_DIR" \
         -DSDL_WERROR=OFF \
         -DSDL_TEST=OFF \
@@ -69,7 +57,6 @@ copy_build_artifacts() {
 
 copy_cmake() {
     cp $ROOTDIR/CMakeLists.txt "$OUT_DIR"
-    cp $ROOTDIR/windows/sdl2.cmake "$OUT_DIR"
 }
 
 package() {

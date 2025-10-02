@@ -63,7 +63,37 @@ jobs:
           name: android
           path: artifacts/*
 
+  linux:
+    name: "Linux ${{ matrix.arch }}"
+    runs-on: ${{ matrix.runs-on }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runs-on: ubuntu-latest
+            arch: amd64
+
+          - runs-on: ubuntu-24.04-arm
+            arch: aarch64
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build (Linux)
+        if: matrix.platform == 'linux'
+        run: |
+          chmod a+x ./unix/build.sh ./unix/linux-deps.sh
+          ./unix/linux-deps.sh
+          ./unix/build.sh
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-${{ matrix.arch }}
+          path: artifacts/*
+
   unix:
+    name: "${{ matrix.platform }} ${{ matrix.arch }}""
     runs-on: ${{ matrix.runs-on }}
     strategy:
       fail-fast: false
@@ -79,13 +109,10 @@ jobs:
             arch: amd64
             vm-arch: x86_64
 
-          - platform: linux
+          - platform: freebsd
             runs-on: ubuntu-latest
             arch: amd64
-
-          - platform: linux
-            runs-on: ubuntu-24.04-arm
-            arch: aarch64
+            vm-arch: x86_64
 
     env:
       PLATFORM: ${{ matrix.platform }}
@@ -93,6 +120,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Disable man-db updates
+        run: sudo rm /var/lib/man-db/auto-update
 
       - name: Build (Solaris)
         if: matrix.platform == 'solaris'
@@ -103,7 +133,7 @@ jobs:
           usesh: true
           envs: 'PLATFORM ARCH GITHUB_WORKSPACE'
           prepare: |
-            pkg install wget libx11 unzip math cmake
+            pkg install wget libx11 unzip math cmake gnu-make
 
           run: |
             chmod a+x ./unix/build.sh
@@ -124,12 +154,20 @@ jobs:
             bash unix/freebsd-deps.sh
             bash unix/build.sh
 
-      - name: Build (Linux)
-        if: matrix.platform == 'linux'
-        run: |
-          chmod a+x ./unix/build.sh ./unix/linux-deps.sh
-          ./unix/linux-deps.sh
-          ./unix/build.sh
+      - name: Build (OpenBSD)
+        if: matrix.platform == 'openbsd'
+        uses: vmactions/openbsd-vm@v1
+        with:
+          arch: ${{ matrix.vm-arch }}
+          usesh: true
+          envs: 'PLATFORM ARCH GITHUB_WORKSPACE'
+          prepare: |
+            pkg_add bash wget
+
+          run: |
+            chmod a+x ./unix/build.sh ./unix/openbsd-deps.sh
+            bash unix/openbsd-deps.sh
+            bash unix/build.sh
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
