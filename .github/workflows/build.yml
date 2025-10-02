@@ -132,7 +132,8 @@ jobs:
           usesh: true
           envs: 'PLATFORM ARCH GITHUB_WORKSPACE'
           prepare: |
-            pkg install wget libx11 unzip math cmake gnu-make gcc14 zstd
+            chmod a+x ./unix/omnios-deps.sh
+            bash unix/omnios-deps.sh
 
           run: |
             chmod a+x ./unix/build.sh
@@ -146,11 +147,12 @@ jobs:
           usesh: true
           envs: 'PLATFORM ARCH GITHUB_WORKSPACE'
           prepare: |
-            pkg install -y bash wget
+            pkg install -y bash
+            chmod a+x ./unix/freebsd-deps.sh
+            bash unix/freebsd-deps.sh
 
           run: |
-            chmod a+x ./unix/build.sh ./unix/freebsd-deps.sh
-            bash unix/freebsd-deps.sh
+            chmod a+x ./unix/build.sh
             bash unix/build.sh
 
       - name: Build (OpenBSD)
@@ -161,11 +163,12 @@ jobs:
           usesh: true
           envs: 'PLATFORM ARCH GITHUB_WORKSPACE'
           prepare: |
-            pkg_add bash wget
+            pkg_add bash
+            chmod a+x ./unix/openbsd-deps.sh
+            bash unix/openbsd-deps.sh
 
           run: |
-            chmod a+x ./unix/build.sh ./unix/openbsd-deps.sh
-            bash unix/openbsd-deps.sh
+            chmod a+x ./unix/build.sh
             bash unix/build.sh
 
       - name: Upload Artifacts
