@@ -93,7 +93,7 @@ jobs:
           path: artifacts/*
 
   unix:
-    name: "${{ matrix.platform }} ${{ matrix.arch }}""
+    name: "${{ matrix.platform }} ${{ matrix.arch }}"
     runs-on: ${{ matrix.runs-on }}
     strategy:
       fail-fast: false
