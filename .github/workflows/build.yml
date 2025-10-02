@@ -132,7 +132,7 @@ jobs:
           usesh: true
           envs: 'PLATFORM ARCH GITHUB_WORKSPACE'
           prepare: |
-            pkg install wget libx11 unzip math cmake gnu-make
+            pkg install wget libx11 unzip math cmake gnu-make gcc14 zstd
 
           run: |
             chmod a+x ./unix/build.sh
