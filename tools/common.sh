@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -ex
 
 # Common variables (repo, artifact, etc) used by tools
 
@@ -16,6 +16,5 @@ extract() {
   rm -fr $DIRECTORY
   unzip "$ROOTDIR/$ARTIFACT"
 
-  mv SDL-* "$FILENAME-$VERSION"
   mv "$FILENAME-$VERSION" "$FILENAME-$VERSION-$ARCH"
 }

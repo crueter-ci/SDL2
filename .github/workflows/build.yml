@@ -80,7 +80,6 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Build (Linux)
-        if: matrix.platform == 'linux'
         run: |
           chmod a+x ./unix/build.sh ./unix/linux-deps.sh
           ./unix/linux-deps.sh
