@@ -131,8 +131,6 @@ jobs:
           release: "r151054"
           usesh: true
           envs: 'PLATFORM ARCH GITHUB_WORKSPACE'
-          prepare: |
-            pkg install bash
 
           run: |
             chmod a+x ./unix/omnios-deps.sh
