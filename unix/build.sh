@@ -27,7 +27,7 @@ configure() {
         -DCMAKE_INSTALL_LIBDIR=lib \
         -DSDL_SHARED=ON \
         -DSDL_STATIC=ON \
-        -G "$GENERATOR" \
+        -G "Ninja" \
         -DCMAKE_BUILD_TYPE=Release \
         "${EXTRA_CMAKE_FLAGS[@]}"
 }
