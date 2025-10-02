@@ -103,7 +103,7 @@ jobs:
           usesh: true
           envs: 'PLATFORM ARCH GITHUB_WORKSPACE'
           prepare: |
-            pkg install wget libx11 unzip math
+            pkg install wget libx11 unzip math cmake
 
           run: |
             chmod a+x ./unix/build.sh
