@@ -1,12 +1,11 @@
 #!/bin/sh
 
-# Downloads the specified version of the software.
+# Downloads the specified version of SDL2.
 # Requires: wget
 
 # shellcheck disable=SC1091
 . tools/common.sh || exit 1
 
-# This shouldn't need to be changed unless the software is on GitLab or otherwise
 DOWNLOAD_URL="https://github.com/$REPO/releases/download/$TAG/$ARTIFACT"
 
 while true; do

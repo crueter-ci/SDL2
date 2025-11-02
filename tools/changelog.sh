@@ -34,6 +34,8 @@ echo "| ----- | ------- | --------- | --------- |"
 artifact Android android
 artifact "Windows (amd64)" windows-amd64
 artifact "Windows (arm64)" windows-arm64
+artifact "MinGW (amd64)" mingw-amd64
+artifact "MinGW (arm64)" mingw-arm64
 artifact "Linux (amd64)" linux-amd64
 artifact "Linux (aarch64)" linux-aarch64
 artifact "Solaris (amd64)" solaris-amd64
