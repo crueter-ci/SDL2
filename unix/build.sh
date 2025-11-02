@@ -1,13 +1,13 @@
 #!/bin/bash -e
 
-set -e
-
+# shellcheck disable=SC1091
 . tools/common.sh || exit 1
 
 OUT_DIR=${OUT_DIR:-$PWD/out}
 ARCH=${ARCH:-amd64}
 BUILD_DIR=${BUILD_DIR:-build}
 PLATFORM=${PLATFORM:-linux}
+ROOTDIR="$PWD"
 
 [ "$PLATFORM" = "freebsd" ] && EXTRA_CMAKE_FLAGS=(-DSDL_ALSA=OFF -DSDL_PULSEAUDIO=OFF -DSDL_OSS=ON -DSDL_X11=ON -DTHREADS_PREFER_PTHREAD_FLAG=ON)
 [ "$PLATFORM" = "openbsd" ] && EXTRA_CMAKE_FLAGS=(-DCMAKE_C_FLAGS="-L/usr/local/lib")
@@ -15,10 +15,9 @@ PLATFORM=${PLATFORM:-linux}
 [ "$PLATFORM" != "linux" ] && EXTRA_CMAKE_FLAGS+=(-DSDL_IBUS=OFF -DSDL_WAYLAND=OFF -DSDL_PIPEWIRE=OFF -DSDL_ALSA=OFF -DSDL_LIBUDEV=OFF -DSDL_DBUS=OFF)
 
 configure() {
-    log_file=$1
-
     # thanks solaris
-    sed 's/LINUX OR FREEBSD/LINUX/' CMakeLists.txt > cmake.tmp && mv cmake.tmp CMakeLists.txt
+    sed 's/LINUX OR FREEBSD/LINUX/' CMakeLists.txt > cmake.tmp
+    mv cmake.tmp CMakeLists.txt
 
     cmake -S . -B "$BUILD_DIR" \
         -DSDL_WERROR=OFF \
@@ -36,9 +35,9 @@ configure() {
 }
 
 build() {
-    echo "Building..."
+    echo "-- Building..."
 
-    cmake --build $BUILD_DIR --config Release --parallel
+    cmake --build "$BUILD_DIR" --config Release --parallel
 }
 
 strip_libs() {
@@ -46,11 +45,11 @@ strip_libs() {
 }
 
 copy_build_artifacts() {
-    echo "Copying artifacts..."
-    cmake --install $BUILD_DIR
+    echo "-- Copying artifacts..."
+    cmake --install "$BUILD_DIR"
 
-    echo "Cleaning..."
-    rm -rf "$OUT_DIR/bin"
+    echo "-- Cleaning..."
+    rm -rf "${OUT_DIR:?}/bin"
     rm -rf "$OUT_DIR"/lib/cmake
     rm -rf "$OUT_DIR"/lib/pkgconfig
     rm -rf "$OUT_DIR"/libdata
@@ -60,36 +59,34 @@ copy_build_artifacts() {
 }
 
 copy_cmake() {
-    cp $ROOTDIR/CMakeLists.txt "$OUT_DIR"
+    cp "$ROOTDIR/CMakeLists.txt" "$OUT_DIR"
 }
 
 package() {
-    echo "Packaging..."
+    echo "-- Packaging..."
     mkdir -p "$ROOTDIR/artifacts"
 
     TARBALL=$FILENAME-$PLATFORM-$ARCH-$VERSION.tar
 
     cd "$OUT_DIR"
-    tar cf $ROOTDIR/artifacts/$TARBALL *
+    tar cf "$ROOTDIR/artifacts/$TARBALL" ./*
 
     cd "$ROOTDIR/artifacts"
-    zstd -10 $TARBALL
-    rm $TARBALL
+    zstd -10 "$TARBALL"
+    rm "$TARBALL"
 
-    $ROOTDIR/tools/sums.sh $TARBALL.zst
+    "$ROOTDIR/tools/sums.sh" "$TARBALL.zst"
 }
-
-ROOTDIR=$PWD
 
 ./tools/download.sh
 
 [[ -e "$BUILD_DIR" ]] && rm -fr "$BUILD_DIR"
 mkdir -p "$BUILD_DIR"
-pushd "$BUILD_DIR"
+cd "$BUILD_DIR"
 
 extract
 
-pushd "$FILENAME-$VERSION-$ARCH"
+cd "$FILENAME-$VERSION-$ARCH"
 
 configure
 
@@ -105,7 +102,4 @@ strip_libs
 
 package
 
-echo "Done! Artifacts are in $ROOTDIR/artifacts, raw lib/include data is in $OUT_DIR"
-
-popd
-popd
+echo "-- Done! Artifacts are in $ROOTDIR/artifacts, raw lib/include data is in $OUT_DIR"

@@ -10,12 +10,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - runs-on: windows-latest
-            arch: amd64
+          - arch: amd64
             msvc_arch: amd64
 
-          - runs-on: windows-11-arm
-            arch: arm64
+          - arch: arm64
             msvc_arch: amd64_arm64
 
     env:
@@ -41,6 +39,51 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: windows-${{ matrix.arch }}
+          path: artifacts/*
+
+  msys:
+    name: "MinGW"
+    runs-on: ${{ matrix.runs-on }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runs-on: windows-latest
+            arch: amd64
+            msystem: mingw64
+
+          - runs-on: windows-11-arm
+            arch: arm64
+            msystem: clangarm64
+
+    env:
+      ARCH: ${{ matrix.arch }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5.0.0
+
+      - name: Setup MSYS2
+        id: msys2
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: ${{ matrix.msystem }}
+          update: true
+          install: >-
+            git make unzip
+          pacboy: >-
+            cmake:p ninja:p toolchain:p
+
+      - name: Build
+        shell: msys2 {0}
+        run: |
+          chmod a+x ./windows/build.sh
+          ./windows/build.sh
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: mingw-${{ matrix.arch }}
           path: artifacts/*
 
   android:

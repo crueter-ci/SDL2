@@ -1,16 +1,16 @@
-#!/bin/bash
+#!/bin/sh -e
 
-set -e
-
-. tools/common.sh || exit 1
+# shellcheck disable=SC1091
+. tools/common.sh
 
 OUT_DIR=${OUT_DIR:-"$PWD/out"}
 ARCH=${ARCH:-amd64}
 BUILD_DIR=${BUILD_DIR:-"$PWD/build"}
+ROOTDIR="$PWD"
 
 configure() {
     # Configure here (e.g. cmake or the like)
-    echo "Configuring $PRETTY_NAME..."
+    echo "-- Configuring SDL2..."
 
     cmake -S . -B "$BUILD_DIR" \
         -DSDL_WERROR=OFF \
@@ -26,16 +26,16 @@ configure() {
 }
 
 build() {
-    echo "Building..."
+    echo "-- Building..."
 
-    cmake --build $BUILD_DIR --config Release --parallel
+    cmake --build "$BUILD_DIR" --config Release --parallel
 }
 
 copy_build_artifacts() {
-    echo "Copying artifacts..."
-    cmake --install $BUILD_DIR
+    echo "-- Copying artifacts..."
+    cmake --install "$BUILD_DIR"
 
-    pushd "$OUT_DIR"
+    cd "$OUT_DIR"
     rm -r lib/pkgconfig
     mv bin/SDL2.dll lib/libSDL2.dll
 
@@ -52,40 +52,38 @@ copy_build_artifacts() {
         rm -r bin
     fi
 
-    popd
+    cd "$ROOTDIR"
 }
 
 copy_cmake() {
-    cp $ROOTDIR/CMakeLists.txt "$OUT_DIR"
+    cp "$ROOTDIR/CMakeLists.txt" "$OUT_DIR"
 }
 
 package() {
-    echo "Packaging..."
+    echo "-- Packaging..."
     mkdir -p "$ROOTDIR/artifacts"
 
     TARBALL=$FILENAME-windows-$ARCH-$VERSION.tar
 
     cd "$OUT_DIR"
-    tar cf $ROOTDIR/artifacts/$TARBALL *
+    tar cf "$ROOTDIR/artifacts/$TARBALL" ./*
 
     cd "$ROOTDIR/artifacts"
-    zstd -10 $TARBALL
-    rm $TARBALL
+    zstd -10 "$TARBALL"
+    rm "$TARBALL"
 
-    $ROOTDIR/tools/sums.sh $TARBALL.zst
+    "$ROOTDIR"/tools/sums.sh "$TARBALL.zst"
 }
-
-ROOTDIR=$PWD
 
 ./tools/download.sh
 
-[[ -e "$BUILD_DIR" ]] && rm -fr "$BUILD_DIR"
+[ -e "$BUILD_DIR" ] && rm -fr "$BUILD_DIR"
 mkdir -p "$BUILD_DIR"
-pushd "$BUILD_DIR"
+cd "$BUILD_DIR"
 
 extract
 
-pushd "$FILENAME-$VERSION-$ARCH"
+cd "$FILENAME-$VERSION-$ARCH"
 
 configure
 
@@ -99,7 +97,4 @@ copy_cmake
 
 package
 
-echo "Done! Artifacts are in $ROOTDIR/artifacts, raw lib/include data is in $OUT_DIR"
-
-popd
-popd
+echo "-- Done! Artifacts are in $ROOTDIR/artifacts, raw lib/include data is in $OUT_DIR"

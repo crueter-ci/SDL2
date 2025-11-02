@@ -12,7 +12,7 @@ export ARTIFACT="SDL2-$VERSION.zip"
 export TAG="release-$VERSION"
 
 extract() {
-  echo "Extracting $PRETTY_NAME $VERSION"
+  echo "-- Extracting $PRETTY_NAME $VERSION"
   rm -fr $DIRECTORY
   unzip "$ROOTDIR/$ARTIFACT"
 
