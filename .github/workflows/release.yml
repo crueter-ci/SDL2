@@ -45,11 +45,12 @@ jobs:
         uses: softprops/action-gh-release@v2.3.2
         with:
           body_path: ./changelog.md
-          # Change to your software name
+
           name: SDL2 ${{ env.VERSION }}
           tag_name: v${{ env.VERSION }}
           files: |
             windows-*/*.tar.zst*
+            mingw-*/*.tar.zst*
             android/*.tar.zst*
             solaris-*/*.tar.zst*
             freebsd-*/*.tar.zst*
