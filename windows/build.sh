@@ -7,9 +7,9 @@ OUT_DIR=${OUT_DIR:-"$PWD/out"}
 ARCH=${ARCH:-amd64}
 BUILD_DIR=${BUILD_DIR:-"$PWD/build"}
 ROOTDIR="$PWD"
+PLATFORM="${PLATFORM:-windows}"
 
 configure() {
-    # Configure here (e.g. cmake or the like)
     echo "-- Configuring SDL2..."
 
     cmake -S . -B "$BUILD_DIR" \
@@ -63,7 +63,7 @@ package() {
     echo "-- Packaging..."
     mkdir -p "$ROOTDIR/artifacts"
 
-    TARBALL=$FILENAME-windows-$ARCH-$VERSION.tar
+    TARBALL="$FILENAME-$PLATFORM-$ARCH-$VERSION.tar"
 
     cd "$OUT_DIR"
     tar cf "$ROOTDIR/artifacts/$TARBALL" ./*

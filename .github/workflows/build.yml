@@ -78,7 +78,7 @@ jobs:
         shell: msys2 {0}
         run: |
           chmod a+x ./windows/build.sh
-          ./windows/build.sh
+          PLATFORM=mingw ./windows/build.sh
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
