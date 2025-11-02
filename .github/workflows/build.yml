@@ -72,7 +72,7 @@ jobs:
           install: >-
             git make unzip
           pacboy: >-
-            cmake:p ninja:p
+            cmake:p ninja:p toolchain:p
 
       - name: Build
         shell: msys2 {0}
