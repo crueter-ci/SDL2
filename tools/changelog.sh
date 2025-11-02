@@ -3,6 +3,7 @@
 # Generates a "changelog"/download utility table
 # Requires: echo
 
+# shellcheck disable=SC1091
 . tools/common.sh || exit 1
 
 # Change to the current repo
@@ -10,17 +11,19 @@ BASE_DOWNLOAD_URL="https://github.com/crueter-ci/SDL2/releases/download"
 TAG=v$VERSION
 
 artifact() {
-  NAME="$1"
-  PLATFORM="$2"
+    NAME="$1"
+    PLATFORM="$2"
 
-  BASE_URL="${BASE_DOWNLOAD_URL}/${TAG}/${FILENAME}-${PLATFORM}-${VERSION}.tar.zst"
+    BASE_URL="${BASE_DOWNLOAD_URL}/${TAG}/${FILENAME}-${PLATFORM}-${VERSION}.tar.zst"
 
-  echo -n "| "
-  echo -n "[$NAME]($BASE_URL) | "
-  for sum in 1 256 512; do
-    echo -n "[Download]($BASE_URL.sha${sum}sum) |"
-  done
-  echo
+    COL1="[$NAME]($BASE_URL)"
+
+    printf '| %1 |' "$COL1"
+    for sum in 1 256 512; do
+        DOWNLOAD="[Download]($BASE_URL.sha${sum}sum)"
+        printf " %1 |" "$DOWNLOAD" 
+    done
+    echo
 }
 
 echo "Builds for $PRETTY_NAME $VERSION"
