@@ -43,7 +43,7 @@ jobs:
 
   msys:
     name: "MinGW"
-    runs-on: ${{ matrix.os.runs-on }}
+    runs-on: ${{ matrix.runs-on }}
     strategy:
       fail-fast: false
       matrix:
