@@ -70,9 +70,9 @@ jobs:
           msystem: ${{ matrix.msystem }}
           update: true
           install: >-
-            git make
+            git make unzip
           pacboy: >-
-            cmake:p
+            cmake:p ninja:p
 
       - name: Build
         shell: msys2 {0}
