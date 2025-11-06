@@ -89,14 +89,6 @@ sums() {
 	done
 }
 
-# false if on windows
-unix() {
-	case "$PLATFORM" in
-		windows|mingw) return 1 ;;
-		*) return 0 ;;
-	esac
-}
-
 ## Build Functions ##
 
 # cmake
@@ -169,21 +161,24 @@ copy_build_artifacts() {
     rm -rf "$OUT_DIR"/lib/cmake
     rm -rf "$OUT_DIR"/cmake
 
-	if unix; then
-		rm -rf "$OUT_DIR"/libdata
-		rm -rf "$OUT_DIR"/share
-		find "$OUT_DIR/lib" -type l -exec rm {} \;
-		mv "$OUT_DIR/lib"/*.so* "$OUT_DIR/lib/libSDL2.so"
-	else
-	    mv "$OUT_DIR"/bin/SDL2.dll "$OUT_DIR"/lib/libSDL2.dll
-		if ! command -v clang-cl >/dev/null 2>&1; then
-			mv "$OUT_DIR"/lib/libSDL2.a "$OUT_DIR"/lib/libSDL2_static.lib
-			mv "$OUT_DIR"/lib/libSDL2.dll.a "$OUT_DIR"/lib/libSDL2.lib
-		else
-			mv "$OUT_DIR"/lib/SDL2.lib "$OUT_DIR"/lib/libSDL2.lib
-			mv "$OUT_DIR"/lib/SDL2-static.lib "$OUT_DIR"/lib/libSDL2_static.lib
-		fi
-	fi
+	case "$PLATFORM" in
+		windows|mingw)
+			mv "$OUT_DIR"/bin/SDL2.dll "$OUT_DIR"/lib/libSDL2.dll
+			if ! command -v clang-cl >/dev/null 2>&1; then
+				mv "$OUT_DIR"/lib/libSDL2.a "$OUT_DIR"/lib/libSDL2_static.lib
+				mv "$OUT_DIR"/lib/libSDL2.dll.a "$OUT_DIR"/lib/libSDL2.lib
+			else
+				mv "$OUT_DIR"/lib/SDL2.lib "$OUT_DIR"/lib/libSDL2.lib
+				mv "$OUT_DIR"/lib/SDL2-static.lib "$OUT_DIR"/lib/libSDL2_static.lib
+			fi
+			;;
+		*)
+			rm -rf "$OUT_DIR"/libdata
+			rm -rf "$OUT_DIR"/share
+			find "$OUT_DIR/lib" -type l -exec rm {} \;
+			mv "$OUT_DIR/lib"/*.so* "$OUT_DIR/lib/libSDL2.so"
+			;;
+	esac
 
 	rm -rf "${OUT_DIR:?}/bin"
 }
