@@ -194,7 +194,7 @@ jobs:
             chmod a+x ./tools/build.sh
 
             ./deps/freebsd.sh
-            bash -e./tools/build.sh
+            bash -e ./tools/build.sh
 
       - name: Build (OpenBSD)
         if: matrix.platform == 'openbsd'
