@@ -67,7 +67,7 @@ jobs:
           msystem: ${{ matrix.msystem }}
           update: true
           install: >-
-            git make unzip
+            git make unzip patch
           pacboy: >-
             cmake:p ninja:p toolchain:p
 
