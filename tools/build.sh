@@ -22,6 +22,27 @@ fi
 : "${OUT_DIR:=$PWD/out}"
 : "${BUILD_DIR:=build}"
 
+## Command Checks ##
+
+must_install() {
+	for cmd in "$@"; do
+		command -v "$cmd" >/dev/null 2>&1 || { echo "-- $cmd must be installed" && exit 1; }
+	done
+}
+
+must_install curl zstd tar
+
+if [ "$PLATFORM" != android ]; then
+	must_install cmake ninja
+fi
+
+case "$ARTIFACT" in
+	*.zip) must_install unzip ;;
+	*.tar.*) ;;
+	*.7z) must_install 7z ;;
+	*) echo "-- Unsupported extension ${ARTIFACT##.*}"; exit 1 ;;
+esac
+
 ## Platform Stuff ##
 
 [ "$PLATFORM" = "freebsd" ] && EXTRA_CMAKE_FLAGS=(-DSDL_ALSA=OFF -DSDL_PULSEAUDIO=OFF -DSDL_OSS=ON -DSDL_X11=ON -DTHREADS_PREFER_PTHREAD_FLAG=ON)
@@ -39,17 +60,18 @@ esac
 # download
 DOWNLOAD_URL="https://github.com/$REPO/releases/download/$TAG/$ARTIFACT"
 download() {
-	set -x
-	while true; do
-		if [ ! -f "$ARTIFACT" ]; then
-			curl -L "$DOWNLOAD_URL" -o "$ARTIFACT" && break
-			echo "-- -- Download failed, trying again in 5 seconds..."
-			sleep 5
-		else
-			break
-		fi
+	TRIES=0
+	[ -f "$ARTIFACT" ] && return
+
+	while [ "$TRIES" -le 30 ]; do
+		curl -L "$DOWNLOAD_URL" -o "$ARTIFACT" && return
+		TRIES=$((TRIES + 1))
+		echo "-- Download failed, trying again in 5 seconds..."
+		sleep 0
 	done
-	set +x
+
+	echo "-- Download failed after 30 tries, aborting"
+	exit 1
 }
 
 # extract the archive + apply patches
@@ -61,7 +83,6 @@ extract() {
 		*.zip) unzip "$ROOTDIR/$ARTIFACT" >/dev/null ;;
 		*.tar.*) tar xf "$ROOTDIR/$ARTIFACT" >/dev/null ;;
 		*.7z) 7z x "$ROOTDIR/$ARTIFACT" >/dev/null ;;
-		*) echo "-- Unsupported extension ${ARTIFACT##.*}"; exit 1 ;;
 	esac
 
 	## Patches ##
@@ -71,7 +92,7 @@ extract() {
 	sed 's/LINUX OR FREEBSD/LINUX/' CMakeLists.txt > cmake.tmp && mv cmake.tmp CMakeLists.txt
 
 	# thanks microsoft
-	patch -p1 < "$ROOTDIR"/.patch/0001-sdl-endian.patch
+	sed -i 's/#ifdef __clang__/#if defined(__clang__) && !_SDL_HAS_BUILTIN(_m_prefetch)/' include/SDL_endian.h
 
 	popd >/dev/null
 }
