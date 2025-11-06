@@ -18,7 +18,7 @@ fi
 : "${PLATFORM:?-- You must supply the PLATFORM environment variable.}"
 : "${ARCH:=$DEFAULT_ARCH}"
 : "${OUT_DIR:=$PWD/out}"
-: "${BUILD_DIR:=$PWD/build}"
+: "${BUILD_DIR:=build}"
 
 ## Platform Stuff ##
 
@@ -33,6 +33,22 @@ case "$PLATFORM" in
 esac
 
 ## Utility Functions ##
+
+# download
+DOWNLOAD_URL="https://github.com/$REPO/releases/download/$TAG/$ARTIFACT"
+download() {
+	set -x
+	while true; do
+		if [ ! -f "$ARTIFACT" ]; then
+			curl -L "$DOWNLOAD_URL" -o "$ARTIFACT" && break
+			echo "-- -- Download failed, trying again in 5 seconds..."
+			sleep 5
+		else
+			break
+		fi
+	done
+	set +x
+}
 
 # extract the archive + apply patches
 extract() {
@@ -68,20 +84,6 @@ sums() {
 				sha${algo}sum "$file" | cut -d " " -f1 | tr -d "\n" > "$file".sha${algo}sum
 			fi
 		done
-	done
-}
-
-# download
-DOWNLOAD_URL="https://github.com/$REPO/releases/download/$TAG/$ARTIFACT"
-download() {
-	while true; do
-		if [ ! -f "$ARTIFACT" ]; then
-			curl -L "$DOWNLOAD_URL" -o "$ARTIFACT" && break
-			echo "-- -- Download failed, trying again in 5 seconds..."
-			sleep 5
-		else
-			break
-		fi
 	done
 }
 
@@ -209,8 +211,8 @@ rm -rf "$BUILD_DIR" "$OUT_DIR"
 mkdir -p "$BUILD_DIR" "$OUT_DIR"
 
 ## Download + Extract ##
-cd "$BUILD_DIR"
 download
+cd "$BUILD_DIR"
 extract
 
 ## Configure ##
