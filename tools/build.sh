@@ -1,4 +1,6 @@
-#!/bin/bash -e
+#!/bin/bash
+
+set -e
 
 # shellcheck disable=SC1091
 
@@ -90,8 +92,8 @@ sums() {
 # false if on windows
 unix() {
 	case "$PLATFORM" in
-		windows|mingw) return 0 ;;
-		*) return 1 ;;
+		windows|mingw) return 1 ;;
+		*) return 0 ;;
 	esac
 }
 
@@ -173,7 +175,7 @@ copy_build_artifacts() {
 		find "$OUT_DIR/lib" -type l -exec rm {} \;
 		mv "$OUT_DIR/lib"/*.so* "$OUT_DIR/lib/libSDL2.so"
 	else
-	    mv bin/SDL2.dll lib/libSDL2.dll
+	    mv "$OUT_DIR"/bin/SDL2.dll "$OUT_DIR"/lib/libSDL2.dll
 		if ! command -v clang-cl >/dev/null 2>&1; then
 			mv "$OUT_DIR"/lib/libSDL2.a "$OUT_DIR"/lib/libSDL2_static.lib
 			mv "$OUT_DIR"/lib/libSDL2.dll.a "$OUT_DIR"/lib/libSDL2.lib
