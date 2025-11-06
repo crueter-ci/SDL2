@@ -15,10 +15,10 @@ else
 	DEFAULT_ARCH=amd64
 fi
 
-: "${ARCH:=$DEFAULT_ARCH}"
-: "${OUT_DIR:$PWD/out}"
-: "${BUILD_DIR:=$PWD/build}"
 : "${PLATFORM:?-- You must supply the PLATFORM environment variable.}"
+: "${ARCH:=$DEFAULT_ARCH}"
+: "${OUT_DIR:=$PWD/out}"
+: "${BUILD_DIR:=$PWD/build}"
 
 ## Platform Stuff ##
 
@@ -40,22 +40,22 @@ extract() {
 	rm -fr "$DIRECTORY"
 
 	case "$ARTIFACT" in
-		*.zip) unzip "$ROOTDIR/$ARTIFACT" ;;
-		*.tar.*) tar xf "$ROOTDIR/$ARTIFACT" ;;
-		*.7z) 7z x "$ROOTDIR/$ARTIFACT" ;;
+		*.zip) unzip "$ROOTDIR/$ARTIFACT" >/dev/null ;;
+		*.tar.*) tar xf "$ROOTDIR/$ARTIFACT" >/dev/null ;;
+		*.7z) 7z x "$ROOTDIR/$ARTIFACT" >/dev/null ;;
 		*) echo "-- Unsupported extension ${ARTIFACT##.*}"; exit 1 ;;
 	esac
 
 	## Patches ##
-	pushd "$DIRECTORY"
+	pushd "$DIRECTORY" >/dev/null
 
 	# thanks solaris
 	sed 's/LINUX OR FREEBSD/LINUX/' CMakeLists.txt > cmake.tmp && mv cmake.tmp CMakeLists.txt
 
 	# thanks microsoft
-	patch -p1 < .patch/0001-sdl-endian.patch
+	patch -p1 < "$ROOTDIR"/.patch/0001-sdl-endian.patch
 
-	popd
+	popd >/dev/null
 }
 
 # generate sha1, 256, and 512 sums for a file
@@ -99,6 +99,8 @@ unix() {
 configure() {
 	[ "$PLATFORM" = android ] && return
 
+	echo "-- Configuring..."
+
 	cmake -S . -B "$BUILD_DIR" \
 		-DSDL_WERROR=OFF \
 		-DSDL_TEST=OFF \
@@ -114,6 +116,8 @@ configure() {
 }
 
 build() {
+	echo "-- Building..."
+
 	if [ "$PLATFORM" = android ]; then
 		export PATH="$ANDROID_NDK_ROOT:$PATH"
 
@@ -131,7 +135,6 @@ build() {
 		sed -i "s/android-16/android-$ANDROID_API/" build-scripts/androidbuildlibs.sh
 		build-scripts/androidbuildlibs.sh -j"$(nproc)"
 	else
-		echo "-- Building..."
 		cmake --build "$BUILD_DIR" --config Release --parallel
 	fi
 }
