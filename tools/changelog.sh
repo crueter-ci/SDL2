@@ -1,13 +1,12 @@
 #!/bin/sh -e
 
-# Generates a "changelog"/download utility table
-# Requires: echo
+## Generates a "changelog"/download utility table ##
 
 # shellcheck disable=SC1091
-. tools/common.sh || exit 1
+. tools/vars.sh || exit 1
 
 # Change to the current repo
-BASE_DOWNLOAD_URL="https://github.com/crueter-ci/SDL2/releases/download"
+BASE_DOWNLOAD_URL="https://github.com/crueter-ci/$PRETTY_NAME/releases/download"
 TAG=v$VERSION
 
 artifact() {
@@ -21,7 +20,7 @@ artifact() {
     printf "| %s |" "$COL1"
     for sum in 1 256 512; do
         DOWNLOAD="[Download]($BASE_URL.sha${sum}sum)"
-        printf " %s |" "$DOWNLOAD" 
+        printf " %s |" "$DOWNLOAD"
     done
     echo
 }

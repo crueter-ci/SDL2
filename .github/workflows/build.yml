@@ -18,6 +18,7 @@ jobs:
 
     env:
       ARCH: ${{ matrix.arch }}
+      PLATFORM: windows
 
     steps:
       - uses: actions/checkout@v4
@@ -31,9 +32,7 @@ jobs:
 
       - name: Build
         shell: bash
-        run: |
-          chmod a+x ./windows/build.sh
-          ./windows/build.sh
+        run: ./tools/build.sh
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
@@ -58,6 +57,7 @@ jobs:
 
     env:
       ARCH: ${{ matrix.arch }}
+      PLATFORM: mingw
 
     steps:
       - name: Checkout
@@ -76,9 +76,7 @@ jobs:
 
       - name: Build
         shell: msys2 {0}
-        run: |
-          chmod a+x ./windows/build.sh
-          PLATFORM=mingw ./windows/build.sh
+        run: ./tools/build.sh
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
@@ -91,14 +89,15 @@ jobs:
     strategy:
       fail-fast: false
 
+    env:
+      PLATFORM: android
+
     steps:
       - uses: actions/checkout@v4
 
       - name: Build
         shell: bash
-        run: |
-          chmod a+x ./android/build.sh
-          ./android/build.sh
+        run: ./tools/build.sh
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
@@ -121,15 +120,15 @@ jobs:
 
     env:
       ARCH: ${{ matrix.arch }}
+      PLATFORM: linux
 
     steps:
       - uses: actions/checkout@v4
 
       - name: Build (Linux)
         run: |
-          chmod a+x ./unix/build.sh ./unix/linux-deps.sh
-          ./unix/linux-deps.sh
-          ./unix/build.sh
+          ./deps/linux.sh
+          ./tools/build.sh
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
@@ -179,11 +178,11 @@ jobs:
           envs: 'PLATFORM ARCH GITHUB_WORKSPACE'
 
           run: |
-            chmod a+x ./unix/omnios-deps.sh
-            bash unix/omnios-deps.sh
-
+            chmod a+x ./deps/omnios.sh
             chmod a+x ./unix/build.sh
-            ./unix/build.sh
+
+            ./deps/omnios.sh
+            ./tools/build.sh
 
       - name: Build (FreeBSD)
         if: matrix.platform == 'freebsd'
@@ -196,11 +195,11 @@ jobs:
             pkg install -y bash
 
           run: |
-            chmod a+x ./unix/freebsd-deps.sh
-            bash unix/freebsd-deps.sh
+            chmod a+x ./deps/freebsd.sh
+            chmod a+x ./tools/build.sh
 
-            chmod a+x ./unix/build.sh
-            bash unix/build.sh
+            bash ./deps/freebsd.sh
+            bash ./tools/build.sh
 
       - name: Build (OpenBSD)
         if: matrix.platform == 'openbsd'
@@ -213,11 +212,11 @@ jobs:
             pkg_add bash
 
           run: |
-            chmod a+x ./unix/openbsd-deps.sh
-            bash unix/openbsd-deps.sh
+            chmod a+x ./deps/openbsd.sh
+            chmod a+x ./tools/build.sh
 
-            chmod a+x ./unix/build.sh
-            bash unix/build.sh
+            bash deps/openbsd.sh
+            bash tools/build.sh
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
