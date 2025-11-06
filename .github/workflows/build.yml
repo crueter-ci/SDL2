@@ -176,7 +176,7 @@ jobs:
 
           run: |
             chmod a+x ./deps/omnios.sh
-            chmod a+x ./unix/build.sh
+            chmod a+x ./tools/build.sh
 
             ./deps/omnios.sh
             ./tools/build.sh

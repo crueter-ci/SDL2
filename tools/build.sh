@@ -90,8 +90,8 @@ sums() {
 # false if on windows
 unix() {
 	case "$PLATFORM" in
-		windows|mingw) false ;;
-		*) true ;;
+		windows|mingw) return 0 ;;
+		*) return 1 ;;
 	esac
 }
 
