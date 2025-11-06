@@ -27,9 +27,6 @@ jobs:
         with:
           arch: ${{ matrix.msvc_arch }}
 
-      - name: Install wget
-        run: choco install wget
-
       - name: Build
         shell: bash
         run: ./tools/build.sh

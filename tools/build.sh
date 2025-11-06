@@ -76,7 +76,7 @@ DOWNLOAD_URL="https://github.com/$REPO/releases/download/$TAG/$ARTIFACT"
 download() {
 	while true; do
 		if [ ! -f "$ARTIFACT" ]; then
-			curl "$DOWNLOAD_URL" -o "$ARTIFACT" && break
+			curl -L "$DOWNLOAD_URL" -o "$ARTIFACT" && break
 			echo "-- -- Download failed, trying again in 5 seconds..."
 			sleep 5
 		else
