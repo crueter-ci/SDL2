@@ -173,12 +173,12 @@ jobs:
           release: "r151054"
           usesh: true
           envs: 'PLATFORM ARCH GITHUB_WORKSPACE'
-          prepare:
-            chmod a+x ./deps/omnios.sh
-            ./deps/omnios.sh
 
           run: |
+            chmod a+x ./deps/omnios.sh
             chmod a+x ./tools/build.sh
+
+            ./deps/omnios.sh
             ./tools/build.sh
 
       - name: Build (FreeBSD)
@@ -188,12 +188,12 @@ jobs:
           arch: ${{ matrix.vm-arch }}
           usesh: true
           envs: 'PLATFORM ARCH GITHUB_WORKSPACE'
-          prepare: |
-            chmod a+x ./deps/freebsd.sh
-            ./deps/freebsd.sh
 
           run: |
+            chmod a+x ./deps/freebsd.sh
             chmod a+x ./tools/build.sh
+
+            ./deps/freebsd.sh
             ./tools/build.sh
 
       - name: Build (OpenBSD)
@@ -203,12 +203,12 @@ jobs:
           arch: ${{ matrix.vm-arch }}
           usesh: true
           envs: 'PLATFORM ARCH GITHUB_WORKSPACE'
-          prepare: |
-            chmod a+x ./deps/openbsd.sh
-            ./deps/openbsd.sh
 
           run: |
+            chmod a+x ./deps/openbsd.sh
             chmod a+x ./tools/build.sh
+
+            ./deps/openbsd.sh
             ./tools/build.sh
 
       - name: Upload Artifacts
