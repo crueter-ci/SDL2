@@ -89,10 +89,12 @@ extract() {
 	pushd "$DIRECTORY" >/dev/null
 
 	# thanks solaris
-	sed 's/LINUX OR FREEBSD/LINUX/' CMakeLists.txt > cmake.tmp && mv cmake.tmp CMakeLists.txt
+	sed 's/LINUX OR FREEBSD/LINUX/' CMakeLists.txt > cmake.tmp
+	mv cmake.tmp CMakeLists.txt
 
 	# thanks microsoft
-	sed -i 's/#ifdef __clang__/#if defined(__clang__) && !_SDL_HAS_BUILTIN(_m_prefetch)/' include/SDL_endian.h
+	sed 's/#ifdef __clang__/#if defined(__clang__) \&\& !_SDL_HAS_BUILTIN(_m_prefetch)/' include/SDL_endian.h > endian.tmp
+	mv endian.tmp include/SDL_endian.h
 
 	popd >/dev/null
 }
