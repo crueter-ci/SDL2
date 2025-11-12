@@ -216,3 +216,27 @@ jobs:
         with:
           name: ${{ matrix.platform }}-${{ matrix.arch }}
           path: artifacts/*
+
+  macos:
+    name: "macOS"
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+
+    env:
+      PLATFORM: macos
+      ARCH: universal
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Build
+        run: ./tools/build.sh
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-universal
+          path: artifacts/*
