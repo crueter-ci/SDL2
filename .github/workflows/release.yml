@@ -1,8 +1,6 @@
 name: Release
 
 on:
-  schedule:
-    - cron: "0 0 * * 1"
   push:
     branches: [ "master" ]
   workflow_dispatch:
@@ -56,5 +54,6 @@ jobs:
             freebsd-*/*.tar.zst*
             openbsd-*/*.tar.zst*
             linux-*/*.tar.zst*
+            macos-*/*.tar.zst*
 
           make_latest: true

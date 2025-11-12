@@ -3,7 +3,7 @@
 ## Generates a "changelog"/download utility table ##
 
 # shellcheck disable=SC1091
-. tools/vars.sh || exit 1
+. tools/vars.sh
 
 # Change to the current repo
 BASE_DOWNLOAD_URL="https://github.com/crueter-ci/$PRETTY_NAME/releases/download"
@@ -37,6 +37,7 @@ artifact "MinGW (amd64)" mingw-amd64
 artifact "MinGW (arm64)" mingw-arm64
 artifact "Linux (amd64)" linux-amd64
 artifact "Linux (aarch64)" linux-aarch64
+artifact "macOS (universal)" macos-universal
 artifact "Solaris (amd64)" solaris-amd64
 artifact "FreeBSD (amd64)" freebsd-amd64
 artifact "OpenBSD (amd64)" openbsd-amd64
