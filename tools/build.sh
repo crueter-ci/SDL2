@@ -128,7 +128,7 @@ copy_build_artifacts() {
 			rm -rf "$OUT_DIR"/libdata
 			rm -rf "$OUT_DIR"/share
 			find "$OUT_DIR/lib" -type l -exec rm {} \;
-			mv "$OUT_DIR/lib"/*.so* "$OUT_DIR/lib/libSDL2.so"
+			mv "$OUT_DIR/lib"/*."${SHARED_SUFFIX}"* "$OUT_DIR/lib/libSDL2.${SHARED_SUFFIX}"
 			;;
 	esac
 
