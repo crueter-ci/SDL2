@@ -1,8 +1,5 @@
 #!/bin/sh -e
 
-# Explicitly disable man-db auto update (takes forever lol)
-sudo rm /var/lib/man-db/auto-update
-
 sudo apt-get update
 sudo apt-get install gnome-desktop-testing libasound2-dev libpulse-dev libaudio-dev libjack-dev \
   libsndio-dev libusb-1.0-0-dev libx11-dev libxext-dev libxrandr-dev libxcursor-dev \
