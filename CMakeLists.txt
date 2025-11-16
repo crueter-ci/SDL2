@@ -44,6 +44,13 @@ else()
     endif()
 endif()
 
+if (APPLE)
+    foreach(FRAMEWORK AudioToolbox ForceFeedback GameController CoreHaptics CoreAudio)
+        find_library(${FRAMEWORK}_LIBRARY ${FRAMEWORK})
+        target_link_libraries(SDL2 INTERFACE ${${FRAMEWORK}_LIBRARY})
+    endforeacH()
+endif()
+
 add_library(SDL2::SDL2 ALIAS SDL2)
 
 if (CMAKE_SYSTEM_NAME MATCHES ".*FreeBSD.*")
