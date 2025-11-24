@@ -81,12 +81,16 @@ jobs:
           path: artifacts/*
 
   android:
+    name: "Android (${{ matrix.arch }})"
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
+      matrix:
+        arch: [x86_64, aarch64]
 
     env:
       PLATFORM: android
+      ARCH: ${{ matrix.arch }}
 
     steps:
       - uses: actions/checkout@v4
@@ -98,11 +102,11 @@ jobs:
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: android
+          name: android-${{ matrix.arch }}
           path: artifacts/*
 
   linux:
-    name: "Linux ${{ matrix.arch }}"
+    name: "Linux (${{ matrix.arch }})"
     runs-on: ${{ matrix.runs-on }}
     strategy:
       fail-fast: false
@@ -134,7 +138,7 @@ jobs:
           path: artifacts/*
 
   unix:
-    name: "${{ matrix.platform }} ${{ matrix.arch }}"
+    name: "${{ matrix.platform }} (${{ matrix.arch }})"
     runs-on: ${{ matrix.runs-on }}
     strategy:
       fail-fast: false
@@ -215,7 +219,7 @@ jobs:
           path: artifacts/*
 
   macos:
-    name: "macOS"
+    name: "macOS (universal)"
     runs-on: macos-latest
     strategy:
       fail-fast: false
