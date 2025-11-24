@@ -16,7 +16,7 @@ ROOTDIR="$PWD"
 if android; then
 	: "${ANDROID_NDK_ROOT:?-- You must supply the ANDROID_NDK_ROOT environment variable.}"
 	: "${ANDROID_API:=23}"
-	DEFAULT_ARCH=arm64-v8a
+	DEFAULT_ARCH=aarch64
 else
 	DEFAULT_ARCH=amd64
 fi
@@ -67,16 +67,14 @@ build() {
 	if android; then
 		export PATH="$ANDROID_NDK_ROOT:$PATH"
 
-		hosts="linux-x86_64 linux-x86 darwin-x86_64 darwin-x86 windows-x86_64"
-		for host in $hosts; do
-			if [ -d "$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/$host/bin" ]; then
-				ANDROID_TOOLCHAIN="$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/$host/bin"
-				export PATH="$ANDROID_TOOLCHAIN:$PATH"
-				break
-			fi
-		done
+		android_paths
 
-		sed -i "s/armeabi-v7a arm64-v8a x86 x86_64/$ARCH/" build-scripts/androidbuildlibs.sh
+		case "$ARCH" in
+			aarch64) ABI=arm64-v8a ;;
+			x86_64) ABI=x86_64 ;;
+		esac
+
+		sed -i "s/armeabi-v7a arm64-v8a x86 x86_64/$ABI/" build-scripts/androidbuildlibs.sh
 		sed -i 's/SDL2 SDL2_main/SDL2 SDL2_static/' build-scripts/androidbuildlibs.sh
 		sed -i "s/android-16/android-$ANDROID_API/" build-scripts/androidbuildlibs.sh
 		build-scripts/androidbuildlibs.sh -j"$(num_procs)"
