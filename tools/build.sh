@@ -28,8 +28,8 @@ fi
 
 if android; then
 	case "$ARCH" in
-		aarch64) ARCH=arm64-v8a ;;
-		x86_64) ARCH=x86_64 ;;
+		aarch64) ABI=arm64-v8a ;;
+		x86_64) ABI=x86_64 ;;
 	esac
 fi
 
@@ -76,7 +76,7 @@ build() {
 
 		android_paths
 
-		sed -i "s/armeabi-v7a arm64-v8a x86 x86_64/$ARCH/" build-scripts/androidbuildlibs.sh
+		sed -i "s/armeabi-v7a arm64-v8a x86 x86_64/$ABI/" build-scripts/androidbuildlibs.sh
 		sed -i 's/SDL2 SDL2_main/SDL2 SDL2_static/' build-scripts/androidbuildlibs.sh
 		sed -i "s/android-16/android-$ANDROID_API/" build-scripts/androidbuildlibs.sh
 		build-scripts/androidbuildlibs.sh -j"$(num_procs)"
@@ -101,7 +101,7 @@ copy_build_artifacts() {
 
 	if android; then
 	    mkdir "$OUT_DIR"/lib "$OUT_DIR"/include
-		cp "build/android/obj/local/$ARCH"/libSDL2* "$OUT_DIR"/lib
+		cp "build/android/obj/local/$ABI"/libSDL2* "$OUT_DIR"/lib
 		cp include/*.h "$OUT_DIR"/include
 		return
 	fi
