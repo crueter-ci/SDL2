@@ -26,6 +26,13 @@ fi
 : "${OUT_DIR:=$PWD/out}"
 : "${BUILD_DIR:=build}"
 
+if android; then
+	case "$ARCH" in
+		aarch64) ARCH=arm64-v8a ;;
+		x86_64) ARCH=x86_64 ;;
+	esac
+fi
+
 ## Platform Stuff ##
 
 [ "$PLATFORM" = "freebsd" ] && EXTRA_CMAKE_FLAGS=(-DSDL_ALSA=OFF -DSDL_PULSEAUDIO=OFF -DSDL_OSS=ON -DSDL_X11=ON -DTHREADS_PREFER_PTHREAD_FLAG=ON)
@@ -69,12 +76,7 @@ build() {
 
 		android_paths
 
-		case "$ARCH" in
-			aarch64) ABI=arm64-v8a ;;
-			x86_64) ABI=x86_64 ;;
-		esac
-
-		sed -i "s/armeabi-v7a arm64-v8a x86 x86_64/$ABI/" build-scripts/androidbuildlibs.sh
+		sed -i "s/armeabi-v7a arm64-v8a x86 x86_64/$ARCH/" build-scripts/androidbuildlibs.sh
 		sed -i 's/SDL2 SDL2_main/SDL2 SDL2_static/' build-scripts/androidbuildlibs.sh
 		sed -i "s/android-16/android-$ANDROID_API/" build-scripts/androidbuildlibs.sh
 		build-scripts/androidbuildlibs.sh -j"$(num_procs)"
