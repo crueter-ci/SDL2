@@ -4,7 +4,7 @@
 
 # In some projects you will want to fetch latest from gh/fj api
 VERSION="2.32.10"
-export COMMIT="cf5dabd6eaa1b7949b73eaf5268ae1c5e01ba3b6"
+export COMMIT="3c28e8ecc084eaca11cdc8a24026f1b2f8802697"
 export PRETTY_NAME="SDL2"
 export FILENAME="SDL2"
 export REPO="libsdl-org/SDL"
