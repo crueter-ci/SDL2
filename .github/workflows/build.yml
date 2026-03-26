@@ -219,14 +219,23 @@ jobs:
           path: artifacts/*
 
   macos:
-    name: "macOS (universal)"
+    name: "${{ matrix.platform }} (${{ matrix.arch }})"
     runs-on: macos-latest
     strategy:
       fail-fast: false
+      matrix:
+        include:
+          - platform: macos
+            arch: universal
+
+          - platform: ios
+            arch: aarch64
+            ios_target: iphoneos
 
     env:
-      PLATFORM: macos
-      ARCH: universal
+      PLATFORM: ${{ matrix.platform }}
+      ARCH: ${{ matrix.arch }}
+      IOS_TARGET: ${{ matrix.ios_target }}
 
     steps:
       - uses: actions/checkout@v4
