@@ -116,7 +116,7 @@ case "$PLATFORM" in
 	freebsd|openbsd|solaris)
 		TAR="gtar"
 		;;
-	macos)
+	macos|ios)
 		SHARED_SUFFIX=dylib
 		;;
 	windows|mingw)
